@@ -1,0 +1,45 @@
+{
+    "manifest_version": 3,
+    "name": "Media Controller & Playlist",
+    "version": "1.0.0",
+    "description": "Control media tabs and manage playlists.",
+    "permissions": [
+        "activeTab",
+        "tabs",
+        "storage",
+        "scripting"
+    ],
+    "action": {
+        "default_popup": "popup/index.html",
+        "default_icon": {
+            "48": "icons/icon-48.png"
+        }
+    },
+    "icons": {
+        "48": "icons/icon-48.png"
+    },
+    "background": {
+        "scripts": [
+            "background/background.js"
+        ]
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content/media-controller.js"
+            ],
+            "run_at": "document_end",
+            "all_frames": true
+        }
+    ],
+    "default_locale": "en",
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "media-playlist-controller@antigravity.local",
+            "strict_min_version": "109.0"
+        }
+    }
+}

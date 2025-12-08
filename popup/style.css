@@ -1,0 +1,212 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #333333;
+  --accent-color: #6c5ce7;
+  --secondary-bg: #f5f6fa;
+  --border-color: #dcdde1;
+}
+
+[data-theme="dark"] {
+  --bg-color: #2d3436;
+  --text-color: #dfe6e9;
+  --accent-color: #a29bfe;
+  --secondary-bg: #636e72;
+  --border-color: #b2bec3;
+}
+
+body {
+  width: 400px;
+  min-height: 500px;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  background: var(--bg-color);
+  z-index: 10;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-color);
+  font-size: 1.2rem;
+  padding: 5px;
+  border-radius: 5px;
+  transition: background 0.2s;
+}
+
+.icon-btn:hover {
+  background: var(--secondary-bg);
+}
+
+.active-nav-btn {
+  background-color: var(--accent-color);
+  color: #ffffff;
+}
+
+main {
+  padding: 10px;
+}
+
+/* Sections */
+#active-media-list,
+#playlist-view,
+#settings-view {
+  display: none;
+}
+
+.active-view {
+  display: block !important;
+}
+
+/* Media Item Card */
+.media-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background: var(--secondary-bg);
+  border-radius: 8px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.media-icon {
+  width: 32px;
+  height: 32px;
+  margin-right: 10px;
+  border-radius: 4px;
+}
+
+.media-info {
+  flex: 1;
+  overflow: hidden;
+}
+
+.media-title {
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+
+.media-controls {
+  display: flex;
+  gap: 5px;
+}
+
+.control-btn {
+  background: var(--bg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+.control-btn:hover {
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+/* Playlist & Modal */
+.secondary-btn {
+  background: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+.modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: var(--bg-color);
+  margin: 20% auto;
+  padding: 20px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  width: 80%;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.close-modal {
+  color: var(--text-color);
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.playlist-select-item {
+  padding: 10px;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+}
+
+.playlist-select-item:hover {
+  background-color: var(--secondary-bg);
+}
+
+.new-playlist-form {
+  margin-top: 15px;
+  display: flex;
+  gap: 5px;
+}
+
+.new-playlist-form input {
+  flex: 1;
+  padding: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-color);
+  color: var(--text-color);
+}
+
+/* Setting Items */
+.setting-item {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: var(--secondary-bg);
+  border-radius: 8px;
+}
+
+.setting-item label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}

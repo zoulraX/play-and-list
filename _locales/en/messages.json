@@ -1,0 +1,30 @@
+{
+    "extensionName": {
+        "message": "Media Controller & Playlist",
+        "description": "Name of the extension"
+    },
+    "playlistTitle": {
+        "message": "Playlists",
+        "description": "Title for the playlist section"
+    },
+    "settingsTitle": {
+        "message": "Settings",
+        "description": "Title for the settings section"
+    },
+    "addToPlaylist": {
+        "message": "Add to Playlist",
+        "description": "Tooltip/text for adding media to playlist"
+    },
+    "themeDark": {
+        "message": "Dark Mode",
+        "description": "Label for dark mode toggle"
+    },
+    "themeLight": {
+        "message": "Light Mode",
+        "description": "Label for light mode toggle"
+    },
+    "language": {
+        "message": "Language",
+        "description": "Label for language selection"
+    }
+}

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <button id="nav-playlist" class="icon-btn" title="Playlists">
+            <!-- Simple Playlist Icon SVG -->
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+            </svg>
+        </button>
+        <h1 id="app-title" data-i18n="extensionName">Media Controller</h1>
+        <button id="nav-settings" class="icon-btn" title="Settings">
+            <!-- Settings Icon SVG -->
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
+            </svg>
+        </button>
+    </header>
+
+    <main>
+        <!-- Active Media List View -->
+        <div id="active-media-list" class="view-section active-view">
+            <!-- Media items will be injected here -->
+            <div id="media-list-container"></div>
+        </div>
+
+        <!-- Playlist View -->
+        <div id="playlist-view" class="view-section">
+            <h2 data-i18n="playlistTitle">Playlists</h2>
+            <button id="create-playlist-btn" class="secondary-btn" style="width:100%; margin-bottom:10px;">+ New
+                Playlist</button>
+            <div id="playlist-container"></div>
+        </div>
+
+        <!-- Settings View -->
+        <div id="settings-view" class="view-section">
+            <h2 data-i18n="settingsTitle">Settings</h2>
+
+            <div class="setting-item">
+                <label data-i18n="language">Language</label>
+                <select id="language-select">
+                    <option value="en">English</option>
+                    <option value="tr">Türkçe</option>
+                </select>
+            </div>
+
+            <div class="setting-item">
+                <label>Theme</label>
+                <div class="toggle-group">
+                    <button id="theme-light" data-i18n="themeLight">Light</button>
+                    <button id="theme-dark" data-i18n="themeDark">Dark</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Add to Playlist Modal -->
+    <div id="add-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h3 data-i18n="addToPlaylist">Add to Playlist</h3>
+            <div id="modal-media-info" style="margin-bottom: 10px; font-size: 0.9em; opacity: 0.8;"></div>
+
+            <div id="modal-playlist-list">
+                <!-- List of playlists to select -->
+            </div>
+
+            <div class="new-playlist-form">
+                <input type="text" id="new-playlist-name" placeholder="New Playlist Name" />
+                <button id="modal-create-playlist-btn">Create & Add</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../utils/i18n.js"></script>
+    <script src="../utils/storage.js"></script>
+    <script src="../utils/theme.js"></script>
+    <script src="popup.js"></script>
+</body>
+
+</html>
