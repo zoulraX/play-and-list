@@ -99,30 +99,59 @@ document.addEventListener('DOMContentLoaded', async () => {
         const div = document.createElement('div');
         div.className = 'media-item';
         div.dataset.tabId = state.tabId;
-        div.innerHTML = `
-      <img src="${state.favIconUrl || 'icons/icon-48.png'}" class="media-icon" onerror="this.src='icons/icon-48.png'" />
-      <div class="media-info">
-        <div class="media-title" title="${state.title}">${state.title}</div>
-        <div style="font-size:0.8em; opacity:0.7;">${state.hostname}</div>
-      </div>
-      <div class="media-controls">
-        <button class="control-btn play-pause-btn" data-tab-id="${state.tabId}">
-             ${state.isPlaying ? '⏸' : '▶'}
-        </button>
-        <button class="control-btn add-playlist-btn" data-tab-id="${state.tabId}" title="Add to Playlist">
-             +
-        </button>
-      </div>
-    `;
 
-        div.querySelector('.play-pause-btn').addEventListener('click', () => {
+        // Create icon
+        const img = document.createElement('img');
+        img.src = state.favIconUrl || 'icons/icon-48.png';
+        img.className = 'media-icon';
+        img.onerror = function () { this.src = 'icons/icon-48.png'; };
+
+        // Create media info container
+        const mediaInfo = document.createElement('div');
+        mediaInfo.className = 'media-info';
+
+        const mediaTitle = document.createElement('div');
+        mediaTitle.className = 'media-title';
+        mediaTitle.title = state.title;
+        mediaTitle.textContent = state.title;
+
+        const mediaHostname = document.createElement('div');
+        mediaHostname.style.fontSize = '0.8em';
+        mediaHostname.style.opacity = '0.7';
+        mediaHostname.textContent = state.hostname;
+
+        mediaInfo.appendChild(mediaTitle);
+        mediaInfo.appendChild(mediaHostname);
+
+        // Create controls container
+        const mediaControls = document.createElement('div');
+        mediaControls.className = 'media-controls';
+
+        const playPauseBtn = document.createElement('button');
+        playPauseBtn.className = 'control-btn play-pause-btn';
+        playPauseBtn.dataset.tabId = state.tabId;
+        playPauseBtn.textContent = state.isPlaying ? '⏸' : '▶';
+        playPauseBtn.addEventListener('click', () => {
             browser.tabs.sendMessage(state.tabId, { command: 'togglePlayback' });
             setTimeout(loadActiveMedia, 100);
         });
 
-        div.querySelector('.add-playlist-btn').addEventListener('click', () => {
+        const addPlaylistBtn = document.createElement('button');
+        addPlaylistBtn.className = 'control-btn add-playlist-btn';
+        addPlaylistBtn.dataset.tabId = state.tabId;
+        addPlaylistBtn.title = 'Add to Playlist';
+        addPlaylistBtn.textContent = '+';
+        addPlaylistBtn.addEventListener('click', () => {
             openAddToPlaylistModal(state);
         });
+
+        mediaControls.appendChild(playPauseBtn);
+        mediaControls.appendChild(addPlaylistBtn);
+
+        // Assemble the element
+        div.appendChild(img);
+        div.appendChild(mediaInfo);
+        div.appendChild(mediaControls);
 
         return div;
     }
@@ -237,23 +266,61 @@ document.addEventListener('DOMContentLoaded', async () => {
             div.style.padding = "10px";
 
             // Header with Name (Double click to edit) and Delete Playlist
-            div.innerHTML = `
-                <div style="font-weight: bold; display:flex; justify-content:space-between; align-items:center;">
-                   <span class="playlist-name-display" data-id="${pl.id}" title="Double click to rename" style="cursor:text;">${pl.name}</span>
-                   <div>
-                       <span style="font-size:0.8em; opacity:0.7; margin-right:5px;">${pl.items.length} items</span>
-                       <button class="icon-btn delete-playlist-btn" data-id="${pl.id}" style="color:red; font-size:0.9em;" title="Delete Playlist">🗑</button>
-                   </div>
-                </div>
-                <div class="playlist-items-preview" style="margin-top:10px;">
-                   <ul class="playlist-ul" style="padding-left:10px; margin:0; list-style:none;">  
-                   </ul>
-                </div>
-            `;
+            const headerDiv = document.createElement('div');
+            headerDiv.style.fontWeight = 'bold';
+            headerDiv.style.display = 'flex';
+            headerDiv.style.justifyContent = 'space-between';
+            headerDiv.style.alignItems = 'center';
 
-            const ul = div.querySelector('.playlist-ul');
+            const nameSpan = document.createElement('span');
+            nameSpan.className = 'playlist-name-display';
+            nameSpan.dataset.id = pl.id;
+            nameSpan.title = 'Double click to rename';
+            nameSpan.style.cursor = 'text';
+            nameSpan.textContent = pl.name;
+
+            const rightDiv = document.createElement('div');
+
+            const itemCountSpan = document.createElement('span');
+            itemCountSpan.style.fontSize = '0.8em';
+            itemCountSpan.style.opacity = '0.7';
+            itemCountSpan.style.marginRight = '5px';
+            itemCountSpan.textContent = pl.items.length + ' items';
+
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'icon-btn delete-playlist-btn';
+            deleteBtn.dataset.id = pl.id;
+            deleteBtn.style.color = 'red';
+            deleteBtn.style.fontSize = '0.9em';
+            deleteBtn.title = 'Delete Playlist';
+            deleteBtn.textContent = '🗑';
+
+            rightDiv.appendChild(itemCountSpan);
+            rightDiv.appendChild(deleteBtn);
+            headerDiv.appendChild(nameSpan);
+            headerDiv.appendChild(rightDiv);
+
+            const previewDiv = document.createElement('div');
+            previewDiv.className = 'playlist-items-preview';
+            previewDiv.style.marginTop = '10px';
+
+            const ul = document.createElement('ul');
+            ul.className = 'playlist-ul';
+            ul.style.paddingLeft = '10px';
+            ul.style.margin = '0';
+            ul.style.listStyle = 'none';
+
+            previewDiv.appendChild(ul);
+            div.appendChild(headerDiv);
+            div.appendChild(previewDiv);
+
             if (pl.items.length === 0) {
-                ul.innerHTML = '<div style="font-size:0.8em; opacity:0.6; margin-left:10px;">Empty</div>';
+                const emptyDiv = document.createElement('div');
+                emptyDiv.style.fontSize = '0.8em';
+                emptyDiv.style.opacity = '0.6';
+                emptyDiv.style.marginLeft = '10px';
+                emptyDiv.textContent = 'Empty';
+                ul.appendChild(emptyDiv);
             } else {
                 pl.items.forEach((item, index) => {
                     const li = document.createElement('li');
@@ -263,10 +330,28 @@ document.addEventListener('DOMContentLoaded', async () => {
                     li.style.marginBottom = '5px';
                     li.style.fontSize = '0.9em';
 
-                    li.innerHTML = `
-                      <a href="${item.url}" target="_blank" style="color:var(--text-color); text-decoration:none; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; flex:1; margin-right:5px;">${item.title}</a>
-                      <button class="icon-btn delete-item-btn" style="color:red; font-size:0.8em; padding:2px;" title="Remove">✕</button>
-                   `;
+                    const link = document.createElement('a');
+                    link.href = item.url;
+                    link.target = '_blank';
+                    link.style.color = 'var(--text-color)';
+                    link.style.textDecoration = 'none';
+                    link.style.textOverflow = 'ellipsis';
+                    link.style.overflow = 'hidden';
+                    link.style.whiteSpace = 'nowrap';
+                    link.style.flex = '1';
+                    link.style.marginRight = '5px';
+                    link.textContent = item.title;
+
+                    const deleteItemBtn = document.createElement('button');
+                    deleteItemBtn.className = 'icon-btn delete-item-btn';
+                    deleteItemBtn.style.color = 'red';
+                    deleteItemBtn.style.fontSize = '0.8em';
+                    deleteItemBtn.style.padding = '2px';
+                    deleteItemBtn.title = 'Remove';
+                    deleteItemBtn.textContent = '✕';
+
+                    li.appendChild(link);
+                    li.appendChild(deleteItemBtn);
 
                     // Remove individual item
                     li.querySelector('.delete-item-btn').addEventListener('click', async (e) => {
@@ -286,8 +371,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             // Rename Playlist Logic
-            const nameSpan = div.querySelector('.playlist-name-display');
-            nameSpan.addEventListener('dblclick', async () => {
+            const playlistNameSpan = div.querySelector('.playlist-name-display');
+            playlistNameSpan.addEventListener('dblclick', async () => {
                 const newName = prompt("Rename Playlist:", pl.name);
                 if (newName && newName.trim() !== "") {
                     const allPlaylists = await Storage.getPlaylists();
