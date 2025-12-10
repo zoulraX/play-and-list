@@ -31,6 +31,11 @@
         // Filter valid media (ignore short sounds or previews < 5s if duration known)
         // Also ignore invisible media if possible, but hard to detect reliably without intersection observer.
         const validMedia = mediaElements.filter(m => {
+            // YouTube specific: filter out preview videos (often on home page or suggestions)
+            if (isYouTube && !window.location.pathname.includes('/watch') && !window.location.pathname.includes('/shorts')) {
+                return false;
+            }
+
             // If duration is Infinity (stream) or > 5s, or not yet known (NaN) but playing
             const validDuration = isNaN(m.duration) || m.duration > 5 || m.duration === Infinity;
             return validDuration;
@@ -47,15 +52,14 @@
 
     function reportMediaStatus() {
         const metadata = getMetadata();
-        // Only report if there is media
-        if (metadata.hasMedia) {
-            browser.runtime.sendMessage({
-                type: 'mediaStatusUpdate',
-                status: metadata
-            }).catch(() => {
-                // Ignore errors if background is not ready
-            });
-        }
+        // Always report status to ensure background knows current state
+        // If media is removed, hasMedia will be false, and background can decide to clear it.
+        browser.runtime.sendMessage({
+            type: 'mediaStatusUpdate',
+            status: metadata
+        }).catch(() => {
+            // Ignore errors if background is not ready
+        });
     }
 
     function setupListeners(media) {

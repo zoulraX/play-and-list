@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "Media Controller & Playlist",
+    "name": "Play and List",
     "version": "1.0.0",
     "description": "Control media tabs and manage playlists.",
     "permissions": [

@@ -20,13 +20,31 @@ browser.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 }
             }
 
-            mediaStates.set(sender.tab.id, {
-                ...message.status,
-                title: finalTitle,
-                tabId: sender.tab.id,
-                favIconUrl: sender.tab.favIconUrl,
-                url: sender.tab.url
-            });
+            const currentState = mediaStates.get(sender.tab.id);
+
+            // If we already have a state with media for this tab, and the URL is the same,
+            // but the new report says "no media", we might want to ignore it 
+            // to prevents flickering or removal when video is paused/hidden by site logic.
+            // UNLESS it's a navigation event (URL changed).
+
+            let shouldUpdate = true;
+
+            if (currentState && currentState.hasMedia && !message.status.hasMedia) {
+                // Check if URL is same (ignoring hash)
+                if (currentState.url === sender.tab.url) {
+                    shouldUpdate = false;
+                }
+            }
+
+            if (shouldUpdate) {
+                mediaStates.set(sender.tab.id, {
+                    ...message.status,
+                    title: finalTitle,
+                    tabId: sender.tab.id,
+                    favIconUrl: sender.tab.favIconUrl,
+                    url: sender.tab.url
+                });
+            }
         }
     } else if (message.type === 'getMediaStates') {
         // Convert Map to Array for popup

@@ -235,25 +235,75 @@ document.addEventListener('DOMContentLoaded', async () => {
             div.style.margin = "10px 0";
             div.style.borderRadius = "8px";
             div.style.padding = "10px";
-            div.innerHTML = `
-        <div style="font-weight: bold; display:flex; justify-content:space-between; align-items:center;">
-           <span>${pl.name}</span>
-           <div>
-               <span style="font-size:0.8em; opacity:0.7; margin-right:5px;">${pl.items.length} items</span>
-               <button class="icon-btn delete-playlist-btn" data-id="${pl.id}" style="color:red; font-size:0.9em;">🗑</button>
-           </div>
-        </div>
-        <div class="playlist-items-preview" style="margin-top:10px;">
-           ${pl.items.length > 0 ? `<ul style="padding-left:20px; margin:0;">${pl.items.map(i => `
-               <li style="margin-bottom:5px;">
-                   <a href="${i.url}" target="_blank" style="color:var(--text-color); text-decoration:none;">${i.title}</a>
-               </li>`).join('')}</ul>` : '<div style="font-size:0.8em; opacity:0.6">Empty</div>'}
-        </div>
-      `;
 
+            // Header with Name (Double click to edit) and Delete Playlist
+            div.innerHTML = `
+                <div style="font-weight: bold; display:flex; justify-content:space-between; align-items:center;">
+                   <span class="playlist-name-display" data-id="${pl.id}" title="Double click to rename" style="cursor:text;">${pl.name}</span>
+                   <div>
+                       <span style="font-size:0.8em; opacity:0.7; margin-right:5px;">${pl.items.length} items</span>
+                       <button class="icon-btn delete-playlist-btn" data-id="${pl.id}" style="color:red; font-size:0.9em;" title="Delete Playlist">🗑</button>
+                   </div>
+                </div>
+                <div class="playlist-items-preview" style="margin-top:10px;">
+                   <ul class="playlist-ul" style="padding-left:10px; margin:0; list-style:none;">  
+                   </ul>
+                </div>
+            `;
+
+            const ul = div.querySelector('.playlist-ul');
+            if (pl.items.length === 0) {
+                ul.innerHTML = '<div style="font-size:0.8em; opacity:0.6; margin-left:10px;">Empty</div>';
+            } else {
+                pl.items.forEach((item, index) => {
+                    const li = document.createElement('li');
+                    li.style.display = 'flex';
+                    li.style.justifyContent = 'space-between';
+                    li.style.alignItems = 'center';
+                    li.style.marginBottom = '5px';
+                    li.style.fontSize = '0.9em';
+
+                    li.innerHTML = `
+                      <a href="${item.url}" target="_blank" style="color:var(--text-color); text-decoration:none; text-overflow:ellipsis; overflow:hidden; white-space:nowrap; flex:1; margin-right:5px;">${item.title}</a>
+                      <button class="icon-btn delete-item-btn" style="color:red; font-size:0.8em; padding:2px;" title="Remove">✕</button>
+                   `;
+
+                    // Remove individual item
+                    li.querySelector('.delete-item-btn').addEventListener('click', async (e) => {
+                        e.preventDefault();
+                        e.stopPropagation(); // Avoid triggering route
+                        const allPlaylists = await Storage.getPlaylists();
+                        const targetPl = allPlaylists.find(p => p.id === pl.id);
+                        if (targetPl) {
+                            targetPl.items.splice(index, 1);
+                            await Storage.savePlaylist(targetPl);
+                            loadPlaylistsView();
+                        }
+                    });
+
+                    ul.appendChild(li);
+                });
+            }
+
+            // Rename Playlist Logic
+            const nameSpan = div.querySelector('.playlist-name-display');
+            nameSpan.addEventListener('dblclick', async () => {
+                const newName = prompt("Rename Playlist:", pl.name);
+                if (newName && newName.trim() !== "") {
+                    const allPlaylists = await Storage.getPlaylists();
+                    const targetPl = allPlaylists.find(p => p.id === pl.id);
+                    if (targetPl) {
+                        targetPl.name = newName.trim();
+                        await Storage.savePlaylist(targetPl);
+                        loadPlaylistsView();
+                    }
+                }
+            });
+
+            // Delete Playlist Logic
             div.querySelector('.delete-playlist-btn').addEventListener('click', async (e) => {
                 e.stopPropagation();
-                if (confirm('Delete playlist?')) {
+                if (confirm('Delete playlist "' + pl.name + '"?')) {
                     const pls = await Storage.getPlaylists();
                     const newPls = pls.filter(p => p.id !== pl.id);
                     await Storage.set({ playlists: newPls });
